@@ -28,7 +28,7 @@
       },   
       "doseAndRate":[{
         "doseQuantity": {
-          "value": 70,
+          "value": 60,
           "unit": "mg"
         }
       }
