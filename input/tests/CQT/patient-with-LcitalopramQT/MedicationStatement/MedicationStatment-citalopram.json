@@ -19,10 +19,19 @@
         "end": "2023-01-17T23:59:59+06:00"
       },
     "dosage": {
-        "doseAndRate": [
-          {
-            "dose": "40"
-          }
-        ]
+      "timing": {
+        "repeat":{
+          "frequency": 1,
+          "period": 1,
+          "periodUnit": "d"
+        }
+      },   
+      "doseAndRate":[{
+        "doseQuantity": {
+          "value": 40,
+          "unit": "mg"
+        }
       }
+      ]
+    }
 }

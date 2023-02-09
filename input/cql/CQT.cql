@@ -72,50 +72,128 @@ define "QT Prolonging Rx":
     )
 
 
-define "Citalopram High Dosage, No QT": 
-if (System.Quantity { value: (([MedicationStatement: "Citaloprams"]).dosage[0].doseAndRate[0].dose).value * ToDecimal(([MedicationStatement: "Citaloprams"]).dosage[0].timing.repeat.frequency), unit: 'mg/g' } >= 60 'mg/g' 
-  or  System.Quantity { value: (([MedicationRequest: "Citaloprams"]).dosageInstruction[0].doseAndRate[0].dose).value * ToDecimal(([MedicationRequest: "Citaloprams"]).dosageInstruction[0].timing.repeat.frequency), unit: 'mg/g' } >= 60 'mg/g' 
+define "Citalopram Not High Dosage, QT":
+  if 
+  exists "QT Prolonging Rx"
+  and
+  ( exists
+    (
+    [MedicationStatement: "Citaloprams"] MS
+    where 
+        (System.Quantity { 
+              value: (MS.dosage[0].doseAndRate[0].dose).value * 
+                ToDecimal(MS.dosage[0].timing.repeat.frequency), unit: 'mg/d' 
+            } < 60 'mg/d' 
+        )
+    )
+    or exists 
+    (
+    [MedicationRequest: "Citaloprams"] MR
+    where 
+      (System.Quantity { 
+        value: (MR.dosageInstruction[0].doseAndRate[0].dose).value * 
+           ToDecimal(MR.dosageInstruction[0].timing.repeat.frequency), unit: 'mg/d' 
+            } < 60 'mg/d' 
+    )
+    )
   )
   then true else false
-  
-
-
-define "Citalopram High Dosage, QT":
-if (((System.Quantity { value: (([MedicationStatement: "Citaloprams"]).dosage[0].doseAndRate[0].dose).value * ToDecimal(([MedicationStatement: "Citaloprams"]).dosage[0].timing.repeat.frequency), unit: 'mg/g' } >= 60 'mg/g' 
-  or  System.Quantity { value: (([MedicationRequest: "Citaloprams"]).dosageInstruction[0].doseAndRate[0].dose).value * ToDecimal(([MedicationRequest: "Citaloprams"]).dosageInstruction[0].timing.repeat.frequency), unit: 'mg/g' } >= 60 'mg/g' 
-     )
-  and 
-  exists "QT Prolonging Rx"))
-  then true else false
-  
 
 define "Citalopram Not High Dosage, No QT":
-if (System.Quantity { value: (([MedicationStatement: "Citaloprams"]).dosage[0].doseAndRate[0].dose).value * ToDecimal(([MedicationStatement: "Citaloprams"]).dosage[0].timing.repeat.frequency), unit: 'mg/g' } < 60 'mg/g' 
-  or  System.Quantity { value: (([MedicationRequest: "Citaloprams"]).dosageInstruction[0].doseAndRate[0].dose).value * ToDecimal(([MedicationRequest: "Citaloprams"]).dosageInstruction[0].timing.repeat.frequency), unit: 'mg/g' } < 60 'mg/g' 
+ if 
+  not exists "QT Prolonging Rx"
+  and
+  ( exists
+    (
+    [MedicationStatement: "Citaloprams"] MS
+    where 
+        (System.Quantity { 
+              value: (MS.dosage[0].doseAndRate[0].dose).value * 
+                ToDecimal(MS.dosage[0].timing.repeat.frequency), unit: 'mg/d' 
+            } < 60 'mg/d' 
+        )
+    )
+    or exists 
+    (
+    [MedicationRequest: "Citaloprams"] MR
+    where 
+      (System.Quantity { 
+        value: (MR.dosageInstruction[0].doseAndRate[0].dose).value * 
+           ToDecimal(MR.dosageInstruction[0].timing.repeat.frequency), unit: 'mg/d' 
+            } < 60 'mg/d' 
+    )
+    )
   )
   then true else false
 
-define "Citalopram Not High Dosage, QT":
-if (((System.Quantity { value: (([MedicationStatement: "Citaloprams"]).dosage[0].doseAndRate[0].dose).value * ToDecimal(([MedicationStatement: "Citaloprams"]).dosage[0].timing.repeat.frequency), unit: 'mg/g' } < 60 'mg/g' 
-  or  System.Quantity { value: (([MedicationRequest: "Citaloprams"]).dosageInstruction[0].doseAndRate[0].dose).value * ToDecimal(([MedicationRequest: "Citaloprams"]).dosageInstruction[0].timing.repeat.frequency), unit: 'mg/g' } < 60 'mg/g' 
-     )
-  and 
-  exists "QT Prolonging Rx"))
+define "Citalopram High Dosage, QT":
+   if 
+  exists "QT Prolonging Rx"
+  and
+  ( exists
+    (
+    [MedicationStatement: "Citaloprams"] MS
+    where 
+        (System.Quantity { 
+              value: (MS.dosage[0].doseAndRate[0].dose).value * 
+                ToDecimal(MS.dosage[0].timing.repeat.frequency), unit: 'mg/d' 
+            } >= 60 'mg/d' 
+        )
+    )
+    or exists 
+    (
+    [MedicationRequest: "Citaloprams"] MR
+    where 
+      (System.Quantity { 
+        value: (MR.dosageInstruction[0].doseAndRate[0].dose).value * 
+           ToDecimal(MR.dosageInstruction[0].timing.repeat.frequency), unit: 'mg/d' 
+            } >= 60 'mg/d' 
+    )
+    )
+  )
   then true else false
 
-/*
+
+define "Citalopram High Dosage, No QT": 
+   if 
+   not exists "QT Prolonging Rx"
+   and
+  ( exists
+    (
+    [MedicationStatement: "Citaloprams"] MS
+    where 
+        (System.Quantity { 
+              value: (MS.dosage[0].doseAndRate[0].dose).value * 
+                ToDecimal(MS.dosage[0].timing.repeat.frequency), unit: 'mg/d' 
+            } >= 60 'mg/d' 
+        )
+    )
+    or exists 
+    (
+    [MedicationRequest: "Citaloprams"] MR
+    where 
+      (System.Quantity { 
+        value: (MR.dosageInstruction[0].doseAndRate[0].dose).value * 
+           ToDecimal(MR.dosageInstruction[0].timing.repeat.frequency), unit: 'mg/d' 
+            } >= 60 'mg/d' 
+    )
+    )
+  )
+  then true else false
+  
+
+
 define "Recommendation":
-  if "Citalopram High Dosage, No QT" then 'Minimize risk and monitor ECG'
-  else if "Citalopram High Dosage, QT" then 'Use only if benefit outweighs risk and monitor patient ECG'
-  else if "Citalopram Not High Dosage, No QT" then 'No special precaution'
-  else if "Citalopram Not High Dosage, QT" then 'No special precaution'
+  if "Citalopram High Dosage, No QT" then ' Minimize risk and monitor ECG'
+  else if "Citalopram High Dosage, QT" then ' Use only if benefit outweighs risk and monitor patient ECG'
+  else if "Citalopram Not High Dosage, No QT" then ' No special precaution'
+  else if "Citalopram Not High Dosage, QT" then ' No special precaution'
   else null
 
 
 define "Rationale":
-  if "Citalopram High Dosage, No QT" then 'Mimimize Risk; Increased risk of prolonged QTc possible'
-  else if "Citalopram High Dosage, QT" then 'Usually Avoid Combination; Increased risk of prolonged QTc likely'
-  else if "Citalopram Not High Dosage, No QT" then 'No special precaution'
-  else if "Citalopram Not High Dosage, QT" then 'No special precaution'
+  if "Citalopram High Dosage, No QT" then ' Increased risk of prolonged QTc possible'
+  else if "Citalopram High Dosage, QT" then ' Increased risk of prolonged QTc likely'
+  else if "Citalopram Not High Dosage, No QT" then ' No special precaution'
+  else if "Citalopram Not High Dosage, QT" then ' No special precaution'
   else null
-*/
